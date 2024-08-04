@@ -7,23 +7,23 @@ class ProductCard extends StatelessWidget {
   final VoidCallback onUpdate;
 
   const ProductCard({
-    Key? key,
+    super.key,
     required this.nombre,
     required this.precio,
     required this.onDelete,
     required this.onUpdate,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
-        leading: Icon(Icons.shopping_bag, color: Colors.lightGreen),
+        leading: const Icon(Icons.shopping_bag, color: Colors.lightGreen),
         title: Text(
           nombre,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
           'Precio: $precio',
@@ -33,11 +33,11 @@ class ProductCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(Icons.edit, color: Colors.blue),
+              icon: const Icon(Icons.edit, color: Colors.blue),
               onPressed: onUpdate,
             ),
             IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
+              icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: onDelete,
             ),
           ],

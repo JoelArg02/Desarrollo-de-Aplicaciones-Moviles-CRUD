@@ -1,40 +1,23 @@
+import 'package:app_crud_04/services/api_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:app_crud_04/services/api_service.dart';
 
-class EditarProducto extends StatefulWidget {
-  final String id;
-  final String nombre;
-  final String precio;
-
-  const EditarProducto({
-    super.key,
-    required this.id,
-    required this.nombre,
-    required this.precio,
-  });
+class Agregarproducto extends StatefulWidget {
+  const Agregarproducto({super.key});
 
   @override
-  State<EditarProducto> createState() => _EditarProductoState();
+  State<Agregarproducto> createState() => _AgregarproductoState();
 }
 
-class _EditarProductoState extends State<EditarProducto> {
+class _AgregarproductoState extends State<Agregarproducto> {
   final formKey = GlobalKey<FormState>();
-  late TextEditingController nombreProducto;
-  late TextEditingController precioProducto;
+  TextEditingController nombreProducto = TextEditingController();
+  TextEditingController precioProducto = TextEditingController();
   final ApiService apiService = ApiService();
 
-  @override
-  void initState() {
-    super.initState();
-    nombreProducto = TextEditingController(text: widget.nombre);
-    precioProducto = TextEditingController(text: widget.precio);
-  }
-
-  Future<bool> _actualizar() async {
+  Future<bool> _agregar() async {
     try {
-      return await apiService.actualizarProducto(
-        widget.id,
+      return await apiService.agregarProducto(
         nombreProducto.text,
         precioProducto.text,
       );
@@ -50,7 +33,7 @@ class _EditarProductoState extends State<EditarProducto> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Editar producto"),
+        title: const Text("Agregar producto"),
         backgroundColor: Colors.lightGreen,
       ),
       body: Form(
@@ -63,7 +46,8 @@ class _EditarProductoState extends State<EditarProducto> {
                 controller: nombreProducto,
                 decoration: const InputDecoration(
                   labelText: 'Nombre producto',
-                  prefixIcon: Icon(Icons.shopping_bag, color: Colors.lightGreen),
+                  prefixIcon:
+                      Icon(Icons.shopping_bag, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),
@@ -81,7 +65,8 @@ class _EditarProductoState extends State<EditarProducto> {
                 controller: precioProducto,
                 decoration: const InputDecoration(
                   labelText: 'Precio producto',
-                  prefixIcon: Icon(Icons.attach_money, color: Colors.lightGreen),
+                  prefixIcon:
+                      Icon(Icons.attach_money, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),
@@ -102,7 +87,7 @@ class _EditarProductoState extends State<EditarProducto> {
               ElevatedButton.icon(
                 onPressed: () async {
                   if (formKey.currentState?.validate() ?? false) {
-                    bool success = await _actualizar();
+                    bool success = await _agregar();
                     // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -114,11 +99,12 @@ class _EditarProductoState extends State<EditarProducto> {
                             ),
                             const SizedBox(width: 8),
                             Text(success
-                                ? 'Datos actualizados exitosamente'
-                                : 'Error al actualizar los datos'),
+                                ? 'Datos guardados exitosamente'
+                                : 'Error al guardar los datos'),
                           ],
                         ),
-                        backgroundColor: success ? Colors.lightGreen : Colors.red,
+                        backgroundColor:
+                            success ? Colors.lightGreen : Colors.red,
                       ),
                     );
                     if (success) {
@@ -128,7 +114,7 @@ class _EditarProductoState extends State<EditarProducto> {
                   }
                 },
                 icon: const Icon(Icons.save),
-                label: const Text('Actualizar'),
+                label: const Text('Guardar'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrange,
                 ),
