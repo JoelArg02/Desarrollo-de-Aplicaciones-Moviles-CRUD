@@ -1,10 +1,9 @@
-import 'dart:async';
-import 'dart:convert';
-
+import 'package:app_crud_04/components/product_cart.dart';
+import 'package:app_crud_04/services/api_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import 'AgregarProducto.dart';
+import 'edit_product.dart';
 
 class PaginaProductos extends StatefulWidget {
   const PaginaProductos({super.key});
@@ -14,6 +13,7 @@ class PaginaProductos extends StatefulWidget {
 }
 
 class _PaginaProductosState extends State<PaginaProductos> {
+  final ApiService apiService = ApiService();
   List _listdata = [];
   bool _loading = true;
   String _errorMessage = '';
@@ -24,30 +24,14 @@ class _PaginaProductosState extends State<PaginaProductos> {
       _errorMessage = '';
     });
     try {
-      final respuesta =
-          await http.get(Uri.parse("http://10.9.7.250:80/conexion.php"));
-      if (respuesta.statusCode == 200) {
-        final datos = jsonDecode(respuesta.body);
-        if (datos is List) {
-          setState(() {
-            _listdata = datos;
-            _loading = false;
-          });
-        } else {
-          setState(() {
-            _errorMessage = 'La respuesta no es una lista de datos válida';
-            _loading = false;
-          });
-        }
-      } else {
-        setState(() {
-          _errorMessage = 'Error del servidor: ${respuesta.statusCode}';
-          _loading = false;
-        });
-      }
+      final datos = await apiService.obtenerDatos();
+      setState(() {
+        _listdata = datos;
+        _loading = false;
+      });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Error de conexión: $e';
+        _errorMessage = e.toString();
         _loading = false;
       });
     }
@@ -57,6 +41,34 @@ class _PaginaProductosState extends State<PaginaProductos> {
   void initState() {
     _obtenerDatos();
     super.initState();
+  }
+
+  void _eliminarProducto(String id) async {
+    try {
+      bool success = await apiService.eliminarProducto(id);
+      if (success) {
+        _obtenerDatos();
+      } else {
+        throw Exception('Error al eliminar el producto');
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+      });
+    }
+  }
+
+  void _editarProducto(String id, String nombre, String precio) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            EditarProducto(id: id, nombre: nombre, precio: precio),
+      ),
+    );
+    if (result == true) {
+      _obtenerDatos();
+    }
   }
 
   @override
@@ -83,23 +95,37 @@ class _PaginaProductosState extends State<PaginaProductos> {
                   child: ListView.builder(
                     itemCount: _listdata.length,
                     itemBuilder: ((context, index) {
-                      // Manejo de valores nulos
+                      final id = _listdata[index]['id'].toString();
                       final nombre = _listdata[index]['nombre'] ?? 'Sin nombre';
-                      final precio = _listdata[index]['precio']?.toString() ?? 'Sin precio';
+                      final precio = _listdata[index]['precio']?.toString() ??
+                          'Sin precio';
 
-                      return Card(
-                        elevation: 5,
-                        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        child: ListTile(
-                          leading: Icon(Icons.shopping_bag, color: Colors.lightGreen),
-                          title: Text(
-                            nombre,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(
-                            'Precio: $precio',
-                            style: TextStyle(color: Colors.grey[700]),
-                          ),
+                      return Dismissible(
+                        key: Key(id),
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Icon(Icons.delete, color: Colors.white),
+                        ),
+                        secondaryBackground: Container(
+                          color: Colors.blue,
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Icon(Icons.edit, color: Colors.white),
+                        ),
+                        onDismissed: (direction) {
+                          if (direction == DismissDirection.startToEnd) {
+                            _eliminarProducto(id);
+                          } else if (direction == DismissDirection.endToStart) {
+                            _editarProducto(id, nombre, precio);
+                          }
+                        },
+                        child: ProductCard(
+                          nombre: nombre,
+                          precio: precio,
+                          onDelete: () => _eliminarProducto(id),
+                          onUpdate: () => _editarProducto(id, nombre, precio),
                         ),
                       );
                     }),

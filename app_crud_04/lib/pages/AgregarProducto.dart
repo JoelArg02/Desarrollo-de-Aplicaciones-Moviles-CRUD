@@ -1,6 +1,5 @@
+import 'package:app_crud_04/services/api_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Agregarproducto extends StatefulWidget {
   const Agregarproducto({super.key});
@@ -13,42 +12,25 @@ class _AgregarproductoState extends State<Agregarproducto> {
   final formKey = GlobalKey<FormState>();
   TextEditingController nombreProducto = TextEditingController();
   TextEditingController precioProducto = TextEditingController();
+  final ApiService apiService = ApiService();
 
   Future<bool> _agregar() async {
     try {
-      final respuesta = await http.post(
-        Uri.parse('http://10.9.7.250:80/create.php'),
-        body: {
-          'nombre': nombreProducto.text,
-          'precio': precioProducto.text,
-        },
+      return await apiService.agregarProducto(
+        nombreProducto.text,
+        precioProducto.text,
       );
-
-      if (respuesta.statusCode == 200) {
-        final body = jsonDecode(respuesta.body);
-        print('Respuesta del servidor: $body');  // Imprime la respuesta completa del servidor
-        if (body['mensaje'] == 'Exito') {
-          return true;
-        } else {
-          print('Error: ${body['mensaje']}');
-          if (body.containsKey('error')) {
-            print('Detalles del error: ${body['error']}');
-          }
-        }
-      } else {
-        print('Respuesta del servidor: ${respuesta.statusCode}');
-      }
     } catch (e) {
       print("Excepción: $e");
+      return false;
     }
-    return false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Agregar producto"),
+        title: const Text("Agregar producto"),
         backgroundColor: Colors.lightGreen,
       ),
       body: Form(
@@ -61,7 +43,8 @@ class _AgregarproductoState extends State<Agregarproducto> {
                 controller: nombreProducto,
                 decoration: InputDecoration(
                   labelText: 'Nombre producto',
-                  prefixIcon: Icon(Icons.shopping_bag, color: Colors.lightGreen),
+                  prefixIcon:
+                      Icon(Icons.shopping_bag, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),
@@ -79,7 +62,8 @@ class _AgregarproductoState extends State<Agregarproducto> {
                 controller: precioProducto,
                 decoration: InputDecoration(
                   labelText: 'Precio producto',
-                  prefixIcon: Icon(Icons.attach_money, color: Colors.lightGreen),
+                  prefixIcon:
+                      Icon(Icons.attach_money, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),
@@ -90,7 +74,6 @@ class _AgregarproductoState extends State<Agregarproducto> {
                   if (value == null || value.isEmpty) {
                     return 'El precio del producto no puede estar vacío';
                   }
-                  // Validar que el valor sea un número válido
                   if (double.tryParse(value) == null) {
                     return 'Ingrese un precio válido';
                   }
@@ -116,7 +99,8 @@ class _AgregarproductoState extends State<Agregarproducto> {
                                 : 'Error al guardar los datos'),
                           ],
                         ),
-                        backgroundColor: success ? Colors.lightGreen : Colors.red,
+                        backgroundColor:
+                            success ? Colors.lightGreen : Colors.red,
                       ),
                     );
                     if (success) {
