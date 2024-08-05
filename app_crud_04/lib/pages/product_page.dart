@@ -6,14 +6,15 @@ import 'add_product.dart';
 import 'edit_product.dart';
 
 class PaginaProductos extends StatefulWidget {
-  const PaginaProductos({super.key});
+  final ApiService apiService;
+  PaginaProductos({super.key, ApiService? apiService})
+      : apiService = apiService ?? ApiService();
 
   @override
   State<PaginaProductos> createState() => _PaginaProductosState();
 }
 
 class _PaginaProductosState extends State<PaginaProductos> {
-  final ApiService apiService = ApiService();
   List _listdata = [];
   bool _loading = true;
   String _errorMessage = '';
@@ -24,7 +25,7 @@ class _PaginaProductosState extends State<PaginaProductos> {
       _errorMessage = '';
     });
     try {
-      final datos = await apiService.obtenerDatos();
+      final datos = await widget.apiService.obtenerDatos();
       setState(() {
         _listdata = datos;
         _loading = false;
@@ -45,7 +46,7 @@ class _PaginaProductosState extends State<PaginaProductos> {
 
   void _eliminarProducto(String id) async {
     try {
-      bool success = await apiService.eliminarProducto(id);
+      bool success = await widget.apiService.eliminarProducto(id);
       if (success) {
         _obtenerDatos();
       } else {
