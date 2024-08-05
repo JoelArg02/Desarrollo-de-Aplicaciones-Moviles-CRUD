@@ -9,6 +9,18 @@ class Agregarproducto extends StatefulWidget {
   State<Agregarproducto> createState() => _AgregarproductoState();
 }
 
+bool isValidProductName(String? productName) {
+  return !(productName == null ||
+      productName.isEmpty ||
+      productName.contains(RegExp('[^a-zA-Z0-9]')));
+}
+
+bool isValidProductPrice(String? productPrice) {
+  return !(productPrice == null ||
+      productPrice.isEmpty ||
+      double.tryParse(productPrice) == null);
+}
+
 class _AgregarproductoState extends State<Agregarproducto> {
   final formKey = GlobalKey<FormState>();
   TextEditingController nombreProducto = TextEditingController();
@@ -54,8 +66,8 @@ class _AgregarproductoState extends State<Agregarproducto> {
                   ),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'El nombre del producto no puede estar vacío';
+                  if (!isValidProductName(value)) {
+                    return 'El nombre del producto no puede estar vacío o contener caracteres especiales';
                   }
                   return null;
                 },
@@ -74,12 +86,12 @@ class _AgregarproductoState extends State<Agregarproducto> {
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (!isValidProductPrice(value)) {
                     return 'El precio del producto no puede estar vacío';
                   }
-                  if (double.tryParse(value) == null) {
+                  /* if (double.tryParse(value) == null) {
                     return 'Ingrese un precio válido';
-                  }
+                  } */
                   return null;
                 },
               ),
