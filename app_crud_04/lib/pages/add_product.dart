@@ -12,7 +12,7 @@ class Agregarproducto extends StatefulWidget {
 bool isValidProductName(String? productName) {
   return !(productName == null ||
       productName.isEmpty ||
-      productName.contains(RegExp('[^a-zA-Z0-9]')));
+      productName.contains(RegExp('[^a-zA-Z0-9\\s]')));
 }
 
 bool isValidProductPrice(String? productPrice) {
@@ -59,7 +59,7 @@ class _AgregarproductoState extends State<Agregarproducto> {
                 decoration: const InputDecoration(
                   labelText: 'Nombre',
                   prefixIcon:
-                      Icon(Icons.shopping_bag, color: Colors.lightGreen),
+                      Icon(Icons.person, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),
@@ -78,7 +78,7 @@ class _AgregarproductoState extends State<Agregarproducto> {
                 decoration: const InputDecoration(
                   labelText: 'Número',
                   prefixIcon:
-                      Icon(Icons.attach_money, color: Colors.lightGreen),
+                      Icon(Icons.phone, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),

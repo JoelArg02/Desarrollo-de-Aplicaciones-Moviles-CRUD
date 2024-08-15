@@ -63,7 +63,7 @@ class _EditarProductoState extends State<EditarProducto> {
                 controller: nombreProducto,
                 decoration: const InputDecoration(
                   labelText: 'Nombre',
-                  prefixIcon: Icon(Icons.shopping_bag, color: Colors.lightGreen),
+                  prefixIcon: Icon(Icons.person, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),
@@ -81,7 +81,7 @@ class _EditarProductoState extends State<EditarProducto> {
                 controller: precioProducto,
                 decoration: const InputDecoration(
                   labelText: 'Número de telefono',
-                  prefixIcon: Icon(Icons.attach_money, color: Colors.lightGreen),
+                  prefixIcon: Icon(Icons.phone, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),

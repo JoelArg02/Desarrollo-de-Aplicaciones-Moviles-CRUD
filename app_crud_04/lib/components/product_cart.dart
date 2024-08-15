@@ -26,7 +26,7 @@ class ProductCard extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
-          'Precio: $precio',
+          'Teléfono: $precio',
           style: TextStyle(color: Colors.grey[700]),
         ),
         trailing: Row(
