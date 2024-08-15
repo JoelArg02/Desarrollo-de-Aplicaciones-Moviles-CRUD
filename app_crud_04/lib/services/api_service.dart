@@ -21,7 +21,6 @@ class ApiService {
       // Verificar si ya existe una persona con el mismo nombre y número de teléfono
       QuerySnapshot existingPersona = await personasCollection
           .where('nombre', isEqualTo: nombre)
-          .where('numeroTelefono', isEqualTo: numeroTelefono)
           .get();
 
       if (existingPersona.docs.isNotEmpty) {
