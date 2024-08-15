@@ -50,7 +50,7 @@ class _EditarProductoState extends State<EditarProducto> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Editar producto"),
+        title: const Text("Editar persona"),
         backgroundColor: Colors.lightGreen,
       ),
       body: Form(
@@ -62,7 +62,7 @@ class _EditarProductoState extends State<EditarProducto> {
               TextFormField(
                 controller: nombreProducto,
                 decoration: const InputDecoration(
-                  labelText: 'Nombre producto',
+                  labelText: 'Nombre',
                   prefixIcon: Icon(Icons.shopping_bag, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
@@ -71,7 +71,7 @@ class _EditarProductoState extends State<EditarProducto> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'El nombre del producto no puede estar vacío';
+                    return 'El nombre de la persona no puede estar vacío';
                   }
                   return null;
                 },
@@ -80,7 +80,7 @@ class _EditarProductoState extends State<EditarProducto> {
               TextFormField(
                 controller: precioProducto,
                 decoration: const InputDecoration(
-                  labelText: 'Precio producto',
+                  labelText: 'Número de telefono',
                   prefixIcon: Icon(Icons.attach_money, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
@@ -90,10 +90,10 @@ class _EditarProductoState extends State<EditarProducto> {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'El precio del producto no puede estar vacío';
+                    return 'El número no puede estar vacío';
                   }
                   if (double.tryParse(value) == null) {
-                    return 'Ingrese un precio válido';
+                    return 'Ingrese un número válido';
                   }
                   return null;
                 },

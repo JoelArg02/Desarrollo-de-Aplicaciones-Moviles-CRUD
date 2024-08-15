@@ -50,7 +50,7 @@ class _PaginaProductosState extends State<PaginaProductos> {
       if (success) {
         _obtenerDatos();
       } else {
-        throw Exception('Error al eliminar el producto');
+        throw Exception('Error al eliminar la persona');
       }
     } catch (e) {
       setState(() {
@@ -76,7 +76,7 @@ class _PaginaProductosState extends State<PaginaProductos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lista de Productos'),
+        title: const Text('Lista de Personas'),
         backgroundColor: Colors.lightGreen,
       ),
       body: _loading
@@ -99,7 +99,7 @@ class _PaginaProductosState extends State<PaginaProductos> {
                       final id = _listdata[index]['id'].toString();
                       final nombre = _listdata[index]['nombre'] ?? 'Sin nombre';
                       final precio = _listdata[index]['precio']?.toString() ??
-                          'Sin precio';
+                          'Sin número';
 
                       return Dismissible(
                         key: Key(id),

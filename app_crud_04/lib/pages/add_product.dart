@@ -45,7 +45,7 @@ class _AgregarproductoState extends State<Agregarproducto> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Agregar producto"),
+        title: const Text("Agregar persona"),
         backgroundColor: Colors.lightGreen,
       ),
       body: Form(
@@ -57,7 +57,7 @@ class _AgregarproductoState extends State<Agregarproducto> {
               TextFormField(
                 controller: nombreProducto,
                 decoration: const InputDecoration(
-                  labelText: 'Nombre producto',
+                  labelText: 'Nombre',
                   prefixIcon:
                       Icon(Icons.shopping_bag, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
@@ -67,7 +67,7 @@ class _AgregarproductoState extends State<Agregarproducto> {
                 ),
                 validator: (value) {
                   if (!isValidProductName(value)) {
-                    return 'El nombre del producto no puede estar vacío o contener caracteres especiales';
+                    return 'El nombre de la persona no puede estar vacío o contener caracteres especiales';
                   }
                   return null;
                 },
@@ -76,7 +76,7 @@ class _AgregarproductoState extends State<Agregarproducto> {
               TextFormField(
                 controller: precioProducto,
                 decoration: const InputDecoration(
-                  labelText: 'Precio producto',
+                  labelText: 'Número',
                   prefixIcon:
                       Icon(Icons.attach_money, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
@@ -87,7 +87,7 @@ class _AgregarproductoState extends State<Agregarproducto> {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (!isValidProductPrice(value)) {
-                    return 'El precio del producto no puede estar vacío';
+                    return 'El número de la persona no puede estar vacío';
                   }
                   /* if (double.tryParse(value) == null) {
                     return 'Ingrese un precio válido';
