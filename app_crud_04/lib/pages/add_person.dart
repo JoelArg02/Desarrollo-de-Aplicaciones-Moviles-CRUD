@@ -1,42 +1,37 @@
+import 'package:app_crud_04/services/api_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:app_crud_04/services/api_service.dart';
 
-class EditarProducto extends StatefulWidget {
-  final String id;
-  final String nombre;
-  final String precio;
-
-  const EditarProducto({
-    super.key,
-    required this.id,
-    required this.nombre,
-    required this.precio,
-  });
+class AgregarPersona extends StatefulWidget {
+  const AgregarPersona({super.key});
 
   @override
-  State<EditarProducto> createState() => _EditarProductoState();
+  State<AgregarPersona> createState() => _AgregarPersonaState();
 }
 
-class _EditarProductoState extends State<EditarProducto> {
+bool isValidPersonName(String? personName) {
+  return !(personName == null ||
+      personName.isEmpty ||
+      personName.contains(RegExp('[^a-zA-Z0-9\\s]')));
+}
+
+bool isValidPhoneNumber(String? phoneNumber) {
+  return !(phoneNumber == null ||
+      phoneNumber.isEmpty ||
+      double.tryParse(phoneNumber) == null);
+}
+
+class _AgregarPersonaState extends State<AgregarPersona> {
   final formKey = GlobalKey<FormState>();
-  late TextEditingController nombreProducto;
-  late TextEditingController precioProducto;
+  TextEditingController nombrePersona = TextEditingController();
+  TextEditingController numeroTelefono = TextEditingController();
   final ApiService apiService = ApiService();
 
-  @override
-  void initState() {
-    super.initState();
-    nombreProducto = TextEditingController(text: widget.nombre);
-    precioProducto = TextEditingController(text: widget.precio);
-  }
-
-  Future<bool> _actualizar() async {
+  Future<bool> _agregarPersona() async {
     try {
-      return await apiService.actualizarProducto(
-        widget.id,
-        nombreProducto.text,
-        precioProducto.text,
+      return await apiService.agregarPersona(
+        nombrePersona.text,
+        numeroTelefono.text,
       );
     } catch (e) {
       if (kDebugMode) {
@@ -50,7 +45,7 @@ class _EditarProductoState extends State<EditarProducto> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Editar persona"),
+        title: const Text("Agregar Persona"),
         backgroundColor: Colors.lightGreen,
       ),
       body: Form(
@@ -60,7 +55,7 @@ class _EditarProductoState extends State<EditarProducto> {
           child: Column(
             children: [
               TextFormField(
-                controller: nombreProducto,
+                controller: nombrePersona,
                 decoration: const InputDecoration(
                   labelText: 'Nombre',
                   prefixIcon: Icon(Icons.person, color: Colors.lightGreen),
@@ -70,30 +65,27 @@ class _EditarProductoState extends State<EditarProducto> {
                   ),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'El nombre de la persona no puede estar vacío';
+                  if (!isValidPersonName(value)) {
+                    return 'El nombre de la persona no puede estar vacío o contener caracteres especiales';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: precioProducto,
+                controller: numeroTelefono,
                 decoration: const InputDecoration(
-                  labelText: 'Número de telefono',
+                  labelText: 'Número',
                   prefixIcon: Icon(Icons.phone, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),
                   ),
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.phone,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'El número no puede estar vacío';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Ingrese un número válido';
+                  if (!isValidPhoneNumber(value)) {
+                    return 'El número de teléfono no puede estar vacío o contener caracteres no numéricos';
                   }
                   return null;
                 },
@@ -102,8 +94,7 @@ class _EditarProductoState extends State<EditarProducto> {
               ElevatedButton.icon(
                 onPressed: () async {
                   if (formKey.currentState?.validate() ?? false) {
-                    bool success = await _actualizar();
-                    // ignore: use_build_context_synchronously
+                    bool success = await _agregarPersona();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Row(
@@ -114,21 +105,21 @@ class _EditarProductoState extends State<EditarProducto> {
                             ),
                             const SizedBox(width: 8),
                             Text(success
-                                ? 'Datos actualizados exitosamente'
-                                : 'Error al actualizar los datos'),
+                                ? 'Datos guardados exitosamente'
+                                : 'Error al guardar los datos'),
                           ],
                         ),
-                        backgroundColor: success ? Colors.lightGreen : Colors.red,
+                        backgroundColor:
+                            success ? Colors.lightGreen : Colors.red,
                       ),
                     );
                     if (success) {
-                      // ignore: use_build_context_synchronously
                       Navigator.pop(context, true);
                     }
                   }
                 },
                 icon: const Icon(Icons.save),
-                label: const Text('Actualizar'),
+                label: const Text('Guardar'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrange,
                 ),

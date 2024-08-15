@@ -1,4 +1,4 @@
-import 'package:app_crud_04/pages/add_product.dart';
+import 'package:app_crud_04/pages/add_person.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

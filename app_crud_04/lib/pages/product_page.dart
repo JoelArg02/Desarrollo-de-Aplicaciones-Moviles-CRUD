@@ -1,20 +1,20 @@
-import 'package:app_crud_04/components/product_cart.dart';
+import 'package:app_crud_04/components/person_card.dart';  // Asegúrate de tener un archivo 'person_card.dart'
 import 'package:app_crud_04/services/api_service.dart';
 import 'package:flutter/material.dart';
 
-import 'add_product.dart';
-import 'edit_product.dart';
+import 'add_person.dart';  // Asegúrate de tener un archivo 'add_person.dart'
+import 'edit_person.dart';  // Asegúrate de tener un archivo 'edit_person.dart'
 
-class PaginaProductos extends StatefulWidget {
+class PaginaPersonas extends StatefulWidget {
   final ApiService apiService;
-  PaginaProductos({super.key, ApiService? apiService})
+  PaginaPersonas({super.key, ApiService? apiService})
       : apiService = apiService ?? ApiService();
 
   @override
-  State<PaginaProductos> createState() => _PaginaProductosState();
+  State<PaginaPersonas> createState() => _PaginaPersonasState();
 }
 
-class _PaginaProductosState extends State<PaginaProductos> {
+class _PaginaPersonasState extends State<PaginaPersonas> {
   List _listdata = [];
   bool _loading = true;
   String _errorMessage = '';
@@ -44,9 +44,9 @@ class _PaginaProductosState extends State<PaginaProductos> {
     super.initState();
   }
 
-  void _eliminarProducto(String id) async {
+  void _eliminarPersona(String id) async {
     try {
-      bool success = await widget.apiService.eliminarProducto(id);
+      bool success = await widget.apiService.eliminarPersona(id);
       if (success) {
         _obtenerDatos();
       } else {
@@ -59,12 +59,12 @@ class _PaginaProductosState extends State<PaginaProductos> {
     }
   }
 
-  void _editarProducto(String id, String nombre, String precio) async {
+  void _editarPersona(String id, String nombre, String numeroTelefono) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) =>
-            EditarProducto(id: id, nombre: nombre, precio: precio),
+            EditarPersona(id: id, nombre: nombre, numeroTelefono: numeroTelefono),
       ),
     );
     if (result == true) {
@@ -98,7 +98,7 @@ class _PaginaProductosState extends State<PaginaProductos> {
                     itemBuilder: ((context, index) {
                       final id = _listdata[index]['id'].toString();
                       final nombre = _listdata[index]['nombre'] ?? 'Sin nombre';
-                      final precio = _listdata[index]['precio']?.toString() ??
+                      final numeroTelefono = _listdata[index]['numeroTelefono']?.toString() ??
                           'Sin número';
 
                       return Dismissible(
@@ -117,29 +117,28 @@ class _PaginaProductosState extends State<PaginaProductos> {
                         ),
                         onDismissed: (direction) {
                           if (direction == DismissDirection.startToEnd) {
-                            _eliminarProducto(id);
+                            _eliminarPersona(id);
                           } else if (direction == DismissDirection.endToStart) {
-                            _editarProducto(id, nombre, precio);
+                            _editarPersona(id, nombre, numeroTelefono);
                           }
                         },
-                        child: ProductCard(
+                        child: PersonCard(
                           nombre: nombre,
-                          precio: precio,
-                          onDelete: () => _eliminarProducto(id),
-                          onUpdate: () => _editarProducto(id, nombre, precio),
+                          numeroTelefono: numeroTelefono,
+                          onDelete: () => _eliminarPersona(id),
+                          onUpdate: () => _editarPersona(id, nombre, numeroTelefono),
                         ),
                       );
                     }),
                   ),
                 ),
       floatingActionButton: FloatingActionButton(
-        // ignore: sort_child_properties_last
         child: const Icon(Icons.add, size: 30),
         backgroundColor: Colors.grey,
         onPressed: () async {
           final result = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Agregarproducto()),
+            MaterialPageRoute(builder: (context) => const AgregarPersona()),
           );
           if (result == true) {
             await _obtenerDatos();

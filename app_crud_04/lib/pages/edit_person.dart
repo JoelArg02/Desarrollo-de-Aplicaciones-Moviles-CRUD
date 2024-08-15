@@ -1,37 +1,42 @@
-import 'package:app_crud_04/services/api_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:app_crud_04/services/api_service.dart';
 
-class Agregarproducto extends StatefulWidget {
-  const Agregarproducto({super.key});
+class EditarPersona extends StatefulWidget {
+  final String id;
+  final String nombre;
+  final String numeroTelefono;
+
+  const EditarPersona({
+    super.key,
+    required this.id,
+    required this.nombre,
+    required this.numeroTelefono,
+  });
 
   @override
-  State<Agregarproducto> createState() => _AgregarproductoState();
+  State<EditarPersona> createState() => _EditarPersonaState();
 }
 
-bool isValidProductName(String? productName) {
-  return !(productName == null ||
-      productName.isEmpty ||
-      productName.contains(RegExp('[^a-zA-Z0-9\\s]')));
-}
-
-bool isValidProductPrice(String? productPrice) {
-  return !(productPrice == null ||
-      productPrice.isEmpty ||
-      double.tryParse(productPrice) == null);
-}
-
-class _AgregarproductoState extends State<Agregarproducto> {
+class _EditarPersonaState extends State<EditarPersona> {
   final formKey = GlobalKey<FormState>();
-  TextEditingController nombreProducto = TextEditingController();
-  TextEditingController precioProducto = TextEditingController();
+  late TextEditingController nombrePersona;
+  late TextEditingController numeroTelefono;
   final ApiService apiService = ApiService();
 
-  Future<bool> _agregar() async {
+  @override
+  void initState() {
+    super.initState();
+    nombrePersona = TextEditingController(text: widget.nombre);
+    numeroTelefono = TextEditingController(text: widget.numeroTelefono);
+  }
+
+  Future<bool> _actualizarPersona() async {
     try {
-      return await apiService.agregarProducto(
-        nombreProducto.text,
-        precioProducto.text,
+      return await apiService.actualizarPersona(
+        widget.id,
+        nombrePersona.text,
+        numeroTelefono.text,
       );
     } catch (e) {
       if (kDebugMode) {
@@ -45,7 +50,7 @@ class _AgregarproductoState extends State<Agregarproducto> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Agregar persona"),
+        title: const Text("Editar Persona"),
         backgroundColor: Colors.lightGreen,
       ),
       body: Form(
@@ -55,43 +60,41 @@ class _AgregarproductoState extends State<Agregarproducto> {
           child: Column(
             children: [
               TextFormField(
-                controller: nombreProducto,
+                controller: nombrePersona,
                 decoration: const InputDecoration(
                   labelText: 'Nombre',
-                  prefixIcon:
-                      Icon(Icons.person, color: Colors.lightGreen),
+                  prefixIcon: Icon(Icons.person, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),
                   ),
                 ),
                 validator: (value) {
-                  if (!isValidProductName(value)) {
-                    return 'El nombre de la persona no puede estar vacío o contener caracteres especiales';
+                  if (value == null || value.isEmpty) {
+                    return 'El nombre de la persona no puede estar vacío';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: precioProducto,
+                controller: numeroTelefono,
                 decoration: const InputDecoration(
-                  labelText: 'Número',
-                  prefixIcon:
-                      Icon(Icons.phone, color: Colors.lightGreen),
+                  labelText: 'Número de Teléfono',
+                  prefixIcon: Icon(Icons.phone, color: Colors.lightGreen),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.lightGreen),
                   ),
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.phone,
                 validator: (value) {
-                  if (!isValidProductPrice(value)) {
-                    return 'El número de la persona no puede estar vacío';
+                  if (value == null || value.isEmpty) {
+                    return 'El número no puede estar vacío';
                   }
-                  /* if (double.tryParse(value) == null) {
-                    return 'Ingrese un precio válido';
-                  } */
+                  if (double.tryParse(value) == null) {
+                    return 'Ingrese un número válido';
+                  }
                   return null;
                 },
               ),
@@ -99,8 +102,7 @@ class _AgregarproductoState extends State<Agregarproducto> {
               ElevatedButton.icon(
                 onPressed: () async {
                   if (formKey.currentState?.validate() ?? false) {
-                    bool success = await _agregar();
-                    // ignore: use_build_context_synchronously
+                    bool success = await _actualizarPersona();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Row(
@@ -111,22 +113,20 @@ class _AgregarproductoState extends State<Agregarproducto> {
                             ),
                             const SizedBox(width: 8),
                             Text(success
-                                ? 'Datos guardados exitosamente'
-                                : 'Error al guardar los datos'),
+                                ? 'Datos actualizados exitosamente'
+                                : 'Error al actualizar los datos'),
                           ],
                         ),
-                        backgroundColor:
-                            success ? Colors.lightGreen : Colors.red,
+                        backgroundColor: success ? Colors.lightGreen : Colors.red,
                       ),
                     );
                     if (success) {
-                      // ignore: use_build_context_synchronously
                       Navigator.pop(context, true);
                     }
                   }
                 },
                 icon: const Icon(Icons.save),
-                label: const Text('Guardar'),
+                label: const Text('Actualizar'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrange,
                 ),

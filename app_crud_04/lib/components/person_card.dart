@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class ProductCard extends StatelessWidget {
+class PersonCard extends StatelessWidget {
   final String nombre;
-  final String precio;
+  final String numeroTelefono;
   final VoidCallback onDelete;
   final VoidCallback onUpdate;
 
-  const ProductCard({
+  const PersonCard({
     super.key,
     required this.nombre,
-    required this.precio,
+    required this.numeroTelefono,
     required this.onDelete,
     required this.onUpdate,
   });
@@ -20,13 +20,13 @@ class ProductCard extends StatelessWidget {
       elevation: 5,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
-        leading: const Icon(Icons.shopping_bag, color: Colors.lightGreen),
+        leading: const Icon(Icons.person, color: Colors.lightGreen),
         title: Text(
           nombre,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
-          'Teléfono: $precio',
+          'Teléfono: $numeroTelefono',
           style: TextStyle(color: Colors.grey[700]),
         ),
         trailing: Row(

@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ApiService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final CollectionReference productosCollection =
-      FirebaseFirestore.instance.collection('productos');
+  final CollectionReference personasCollection =
+      FirebaseFirestore.instance.collection('personas');
 
   Future<List<Map<String, dynamic>>> obtenerDatos() async {
     try {
-      QuerySnapshot querySnapshot = await productosCollection.get();
+      QuerySnapshot querySnapshot = await personasCollection.get();
       return querySnapshot.docs
           .map((doc) => {"id": doc.id, ...doc.data() as Map<String, dynamic>})
           .toList();
@@ -16,37 +16,49 @@ class ApiService {
     }
   }
 
-  Future<bool> agregarProducto(String nombre, String precio) async {
+  Future<bool> agregarPersona(String nombre, String numeroTelefono) async {
     try {
-      await productosCollection.add({
+      // Verificar si ya existe una persona con el mismo nombre y número de teléfono
+      QuerySnapshot existingPersona = await personasCollection
+          .where('nombre', isEqualTo: nombre)
+          .where('numeroTelefono', isEqualTo: numeroTelefono)
+          .get();
+
+      if (existingPersona.docs.isNotEmpty) {
+        throw Exception(
+            'La persona con el mismo nombre y número de teléfono ya existe.');
+      }
+
+      // Si no existe, agregar la persona
+      await personasCollection.add({
         'nombre': nombre,
-        'precio': precio,
+        'numeroTelefono': numeroTelefono,
       });
       return true;
     } catch (e) {
-      throw Exception('Error agregando producto: $e');
+      throw Exception('Error agregando persona: $e');
     }
   }
 
-  Future<bool> actualizarProducto(
-      String id, String nombre, String precio) async {
+  Future<bool> actualizarPersona(
+      String id, String nombre, String numeroTelefono) async {
     try {
-      await productosCollection.doc(id).update({
+      await personasCollection.doc(id).update({
         'nombre': nombre,
-        'precio': precio,
+        'numeroTelefono': numeroTelefono,
       });
       return true;
     } catch (e) {
-      throw Exception('Error actualizando producto: $e');
+      throw Exception('Error actualizando persona: $e');
     }
   }
 
-  Future<bool> eliminarProducto(String id) async {
+  Future<bool> eliminarPersona(String id) async {
     try {
-      await productosCollection.doc(id).delete();
+      await personasCollection.doc(id).delete();
       return true;
     } catch (e) {
-      throw Exception('Error eliminando producto: $e');
+      throw Exception('Error eliminando persona: $e');
     }
   }
 }
